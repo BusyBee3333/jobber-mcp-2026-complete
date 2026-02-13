@@ -1,244 +1,898 @@
-> **🚀 Don't want to self-host?** [Join the waitlist for our fully managed solution →](https://mcpengage.com/jobber)
-> 
-> Zero setup. Zero maintenance. Just connect and automate.
+# Jobber MCP Server
 
----
+A comprehensive Model Context Protocol (MCP) server for the Jobber field service management platform. This server provides 96 GraphQL-powered tools and 15 React-based applications for complete business operations management.
 
-# 🚀 Jobber MCP Server — 2026 Complete Version
+## Table of Contents
 
-## 💡 What This Unlocks
+- [Overview](#overview)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Available Tools (96)](#available-tools)
+  - [Client Management (7 tools)](#client-management)
+  - [Job Management (8 tools)](#job-management)
+  - [Quote Management (8 tools)](#quote-management)
+  - [Invoice Management (7 tools)](#invoice-management)
+  - [Scheduling & Visits (6 tools)](#scheduling--visits)
+  - [Team Management (4 tools)](#team-management)
+  - [Expense Tracking (5 tools)](#expense-tracking)
+  - [Product Catalog (5 tools)](#product-catalog)
+  - [Service Requests (6 tools)](#service-requests)
+  - [Reporting & Analytics (3 tools)](#reporting--analytics)
+  - [Property Management (6 tools)](#property-management)
+  - [Timesheet Management (7 tools)](#timesheet-management)
+  - [Line Items (8 tools)](#line-items)
+  - [Form Builder (8 tools)](#form-builder)
+  - [Tax Management (8 tools)](#tax-management)
+- [React Applications (15)](#react-applications)
+- [Usage Examples](#usage-examples)
+- [GraphQL API](#graphql-api)
+- [Development](#development)
+- [License](#license)
 
-**This MCP server gives AI direct access to your entire Jobber workspace.** Instead of clicking through interfaces, you just *tell* it what you need — and AI handles job management, quoting, invoicing, and client operations at scale via GraphQL.
+## Overview
 
-### ⚡ Field Service Power Moves
+The Jobber MCP Server enables AI assistants and automation tools to interact with Jobber's complete field service management platform. It supports:
 
-Real automation that landscaping, cleaning, HVAC, and field service pros actually use:
+- **Client & Property Management**: Track customers, properties, and service history
+- **Job Lifecycle**: From quotes to completion with full workflow support
+- **Scheduling**: Manage visits, assignments, and team calendars
+- **Invoicing**: Create, send, and track payments
+- **Team Management**: Monitor team performance, timesheets, and utilization
+- **Forms**: Build custom forms and capture submissions
+- **Reporting**: Generate business insights and analytics
 
-1. **Smart Job Pipeline** — *"Show all jobs scheduled for this week, identify conflicts where techs are double-booked, and suggest rescheduling options"*
-2. **Quote to Job Acceleration** — *"Pull all quotes sent last month, filter for those awaiting client approval, and create reminder tasks for follow-ups"*
-3. **Revenue Forecasting** — *"List all invoices by status, calculate outstanding AR, project cash flow for next 30 days based on payment patterns"*
-4. **Client Intelligence** — *"Search clients in Chicago area who haven't booked in 90+ days, pull their service history, and generate re-engagement quotes"*
-5. **Workflow Automation** — *"For every new job created today with 'lawn care' tag, auto-generate a quote with standard line items and send to client"*
-
-### 🔗 The Real Power: Combining Tools
-
-AI can chain multiple Jobber operations together via GraphQL:
-
-- Query jobs → Filter by status → Analyze completion times → Optimize scheduling
-- Search clients → Identify service patterns → Create targeted quotes → Track conversions
-- List invoices → Identify late payments → Generate AR aging reports → Prioritize collections
-- Pull job data → Analyze profitability by service type → Adjust pricing strategies
-
-## 📦 What's Inside
-
-**8 Field Service GraphQL Tools** covering job management, quoting, invoicing, and client data:
-
-- `list_jobs` — Query jobs with pagination, filter by status and client
-- `get_job` — Get complete job details (line items, schedule, client info, property address)
-- `create_job` — Create new jobs with title, client, dates, and line items
-- `list_quotes` — Query quotes by status with pagination
-- `create_quote` — Build quotes with line items and send to clients
-- `list_invoices` — Pull invoice data with amounts, status, and payment tracking
-- `list_clients` — Search clients with optional filters and pagination
-- `create_client` — Add new clients with contact info and addresses
-
-All with proper error handling, automatic authentication, and TypeScript types. Powered by **Jobber's GraphQL API** for flexible, efficient queries.
-
-## 🚀 Quick Start
-
-### Option 1: Claude Desktop (Local)
-
-1. **Clone and build:**
-   ```bash
-   git clone https://github.com/BusyBee3333/Jobber-MCP-2026-Complete.git
-   cd jobber-mcp-2026-complete
-   npm install
-   npm run build
-   ```
-
-2. **Get your Jobber API credentials via OAuth:**
-   
-   Jobber uses **OAuth 2.0** for authentication. You'll need to:
-   - Register your app at [Jobber Developer Portal](https://developer.getjobber.com)
-   - Complete OAuth flow to obtain an access token
-   - Tokens are scoped to specific permissions (jobs:read, jobs:write, clients:read, etc.)
-   - See [Jobber OAuth Documentation](https://developer.getjobber.com/docs/authentication) for step-by-step guide
-
-3. **Configure Claude Desktop:**
-   
-   On macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-   
-   On Windows: `%APPDATA%\Claude\claude_desktop_config.json`
-
-   ```json
-   {
-     "mcpServers": {
-       "jobber": {
-         "command": "node",
-         "args": ["/ABSOLUTE/PATH/TO/jobber-mcp-2026-complete/dist/index.js"],
-         "env": {
-           "JOBBER_ACCESS_TOKEN": "your-oauth-access-token-here"
-         }
-       }
-     }
-   }
-   ```
-
-4. **Restart Claude Desktop**
-
-### Option 2: Deploy to Railway
-
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/jobber-mcp)
-
-1. Click the button above
-2. Set your Jobber OAuth access token in Railway dashboard
-3. Use the Railway URL as your MCP server endpoint
-
-### Option 3: Docker
+## Installation
 
 ```bash
-docker build -t jobber-mcp .
-docker run -p 3000:3000 \
-  -e JOBBER_ACCESS_TOKEN=your-token \
-  jobber-mcp
+npm install @mcpengine/jobber-server
 ```
 
-## 🔐 Authentication
-
-Jobber uses **OAuth 2.0** authentication with a **GraphQL API**.
-
-**GraphQL Endpoint:** `https://api.getjobber.com/api/graphql`
-
-**Required Headers:**
-- `Authorization: Bearer YOUR_ACCESS_TOKEN`
-- `X-JOBBER-GRAPHQL-VERSION: 2024-12-16` (API version)
-
-The MCP server handles authentication automatically once you provide your OAuth access token in environment variables.
-
-**Getting credentials (OAuth flow):**
-1. Register your application at [Jobber Developer Portal](https://developer.getjobber.com)
-2. Configure OAuth redirect URIs
-3. Initiate OAuth flow to get authorization code
-4. Exchange code for access token
-5. Use token to authenticate API requests
-
-**Note:** Access tokens may expire; implement token refresh logic for production use.
-
-See the official [Jobber API documentation](https://developer.getjobber.com/docs) and [GraphQL schema reference](https://developer.getjobber.com/docs/api) for details.
-
-## 🎯 Example Prompts for Field Service Pros
-
-Once connected to Claude, use natural language for landscaping, cleaning, HVAC, electrical, and field service workflows:
-
-**Job Management:**
-- *"Show me all jobs scheduled for next week with their client names and addresses"*
-- *"Create a new lawn care job for client ID abc123, scheduled for tomorrow 9am-11am with standard mowing line items"*
-- *"Get full details for job #12345 including line items and total cost"*
-
-**Quoting & Sales:**
-- *"List all quotes sent in the past 2 weeks that are still pending client approval"*
-- *"Create a quote for spring cleanup service with 3 line items: debris removal, mulching, trimming"*
-- *"Show quotes that were approved and check if jobs were created from them"*
-
-**Client Management:**
-- *"Search for clients in Seattle area and show their contact info"*
-- *"Find clients who had jobs completed last summer but no activity since"*
-- *"Create a new client record for 'Green Thumb Apartments' with email and billing address"*
-
-**Invoicing & Revenue:**
-- *"List all invoices due this month and show payment status"*
-- *"Calculate total outstanding invoice balance across all clients"*
-- *"Show invoices with partial payments and identify remaining balances"*
-
-**Business Intelligence:**
-- *"For all jobs completed last quarter, calculate average job value by service type"*
-- *"Identify top 10 clients by total invoice amount and show their service history"*
-
-**Bulk Operations:**
-- *"For all lawn care clients, create seasonal spring quotes with standard packages"*
-- *"Export job data from Q4, group by property type (residential vs commercial), analyze profitability"*
-
-## 🛠️ Development
-
-### Prerequisites
-- Node.js 18+
-- npm or yarn
-- Jobber account with API access (OAuth app registered)
-
-### Setup
+Or install from source:
 
 ```bash
-git clone https://github.com/BusyBee3333/Jobber-MCP-2026-Complete.git
-cd jobber-mcp-2026-complete
+git clone https://github.com/BusyBee3333/mcpengine.git
+cd mcpengine/servers/jobber
 npm install
-cp .env.example .env
-# Edit .env with your Jobber OAuth access token
 npm run build
-npm start
 ```
 
-### Testing
+## Configuration
+
+Set your Jobber API token as an environment variable:
 
 ```bash
-npm test                  # Run all tests
-npm run test:watch        # Watch mode
-npm run test:coverage     # Coverage report
+export JOBBER_API_TOKEN="your_api_token_here"
 ```
 
-## 🐛 Troubleshooting
+To obtain an API token:
 
-### "Authentication failed"
-- Verify your OAuth access token is valid and not expired
-- Check that your app has the necessary scopes (jobs:read, jobs:write, etc.)
-- Ensure your OAuth app is approved in Jobber Developer Portal
-- Test your token directly via [Jobber GraphQL Explorer](https://developer.getjobber.com/explorer)
+1. Log into your Jobber account
+2. Navigate to Settings > API Access
+3. Generate a new API token with appropriate permissions
 
-### "Tools not appearing in Claude"
-- Restart Claude Desktop after updating config
-- Check that the path in `claude_desktop_config.json` is **absolute** (not relative)
-- Verify the build completed successfully (`dist/index.js` exists)
-- Check Claude Desktop logs (Help → View Logs)
+## Available Tools
 
-### "GraphQL errors"
-- Review error messages for schema validation issues
-- Check that field names match Jobber's current GraphQL schema
-- Verify API version header (`X-JOBBER-GRAPHQL-VERSION`) matches your schema
-- Consult [Jobber GraphQL docs](https://developer.getjobber.com/docs/api) for schema changes
+### Client Management
 
-### "Rate limiting"
-- Jobber enforces API rate limits per OAuth app
-- Use pagination (`first` parameter) to fetch data in smaller chunks
-- Implement exponential backoff for retries
+**7 tools** for managing customer relationships:
 
-## 📖 Resources
+1. **list_clients** - List all clients with optional filtering
+   - Parameters: `isArchived`, `limit`, `cursor`
+   - Returns paginated client list with contact details
 
-- [Jobber API Documentation](https://developer.getjobber.com/docs)
-- [Jobber GraphQL Schema Reference](https://developer.getjobber.com/docs/api)
-- [Jobber OAuth Guide](https://developer.getjobber.com/docs/authentication)
-- [GraphQL Explorer (test queries)](https://developer.getjobber.com/explorer)
-- [MCP Protocol Specification](https://modelcontextprotocol.io/)
-- [Claude Desktop Documentation](https://claude.ai/desktop)
+2. **get_client** - Get a specific client by ID
+   - Parameters: `clientId`
+   - Returns full client details including contact info and billing address
 
-## 🤝 Contributing
+3. **create_client** - Create a new client
+   - Parameters: `firstName`, `lastName`, `companyName`, `email`, `phone`, `billingAddress`
+   - Returns newly created client
 
-Contributions are welcome! Please:
+4. **update_client** - Update existing client information
+   - Parameters: `clientId`, `firstName`, `lastName`, `companyName`, `email`, `phone`, `billingAddress`
+   - Returns updated client
 
-1. Fork the repo
-2. Create a feature branch (`git checkout -b feature/amazing-tool`)
-3. Commit your changes (`git commit -m 'Add amazing tool'`)
-4. Push to the branch (`git push origin feature/amazing-tool`)
-5. Open a Pull Request
+5. **archive_client** - Archive a client
+   - Parameters: `clientId`
+   - Returns archived client status
 
-## 📄 License
+6. **search_clients** - Search clients by name, email, or phone
+   - Parameters: `query`, `limit`
+   - Returns matching clients
 
-MIT License - see [LICENSE](LICENSE) for details
+7. **list_client_properties** - List all properties for a client
+   - Parameters: `clientId`, `limit`, `cursor`
+   - Returns paginated property list
 
-## 🙏 Credits
+### Job Management
 
-Built by [MCPEngage](https://mcpengage.com) — AI infrastructure for field service and business software.
+**8 tools** for complete job lifecycle management:
 
-Want more MCP servers? Check out our [full catalog](https://mcpengage.com) covering 30+ business platforms including FieldEdge, Housecall Pro, ServiceTitan, and more.
+1. **list_jobs** - List all jobs with filtering
+   - Parameters: `status`, `clientId`, `limit`, `cursor`
+   - Returns paginated job list with status and details
+
+2. **get_job** - Get detailed job information
+   - Parameters: `jobId`
+   - Returns complete job details including line items and visits
+
+3. **create_job** - Create a new job
+   - Parameters: `title`, `description`, `clientId`, `propertyId`, `startAt`, `endAt`
+   - Returns newly created job
+
+4. **update_job** - Update job information
+   - Parameters: `jobId`, `title`, `description`, `startAt`, `endAt`, `status`
+   - Returns updated job
+
+5. **close_job** - Mark a job as complete
+   - Parameters: `jobId`
+   - Returns closed job status
+
+6. **create_job_visit** - Schedule a visit for a job
+   - Parameters: `jobId`, `title`, `startAt`, `endAt`, `assignedUserIds`
+   - Returns created visit
+
+7. **list_job_visits** - List all visits for a job
+   - Parameters: `jobId`, `limit`, `cursor`
+   - Returns paginated visit list
+
+8. **list_job_line_items** - List all line items on a job
+   - Parameters: `jobId`, `limit`, `cursor`
+   - Returns job line items with pricing
+
+### Quote Management
+
+**8 tools** for creating and managing quotes:
+
+1. **list_quotes** - List all quotes
+   - Parameters: `status`, `clientId`, `limit`, `cursor`
+   - Returns paginated quote list
+
+2. **get_quote** - Get detailed quote information
+   - Parameters: `quoteId`
+   - Returns complete quote with line items
+
+3. **create_quote** - Create a new quote
+   - Parameters: `title`, `message`, `clientId`, `propertyId`
+   - Returns newly created quote
+
+4. **update_quote** - Update quote details
+   - Parameters: `quoteId`, `title`, `message`, `status`
+   - Returns updated quote
+
+5. **send_quote** - Send quote to client
+   - Parameters: `quoteId`, `recipientEmail`
+   - Returns send status
+
+6. **approve_quote** - Approve a quote
+   - Parameters: `quoteId`
+   - Returns approved quote
+
+7. **convert_quote_to_job** - Convert approved quote to job
+   - Parameters: `quoteId`
+   - Returns created job
+
+8. **list_quote_line_items** - List all line items on a quote
+   - Parameters: `quoteId`, `limit`, `cursor`
+   - Returns quote line items
+
+### Invoice Management
+
+**7 tools** for billing and payments:
+
+1. **list_invoices** - List all invoices
+   - Parameters: `status`, `clientId`, `limit`, `cursor`
+   - Returns paginated invoice list
+
+2. **get_invoice** - Get detailed invoice information
+   - Parameters: `invoiceId`
+   - Returns complete invoice with line items and payments
+
+3. **create_invoice** - Create a new invoice
+   - Parameters: `jobId`, `subject`, `message`, `issueDate`, `dueDate`
+   - Returns newly created invoice
+
+4. **send_invoice** - Send invoice to client
+   - Parameters: `invoiceId`, `recipientEmail`
+   - Returns send status
+
+5. **mark_invoice_paid** - Mark invoice as paid
+   - Parameters: `invoiceId`, `amount`, `paymentDate`, `method`
+   - Returns payment record
+
+6. **create_payment** - Record a payment
+   - Parameters: `invoiceId`, `amount`, `paymentDate`, `method`, `reference`
+   - Returns payment details
+
+7. **list_invoice_payments** - List payments for an invoice
+   - Parameters: `invoiceId`, `limit`, `cursor`
+   - Returns payment history
+
+### Scheduling & Visits
+
+**6 tools** for managing schedules and field visits:
+
+1. **list_visits** - List all scheduled visits
+   - Parameters: `startDate`, `endDate`, `status`, `limit`, `cursor`
+   - Returns paginated visit list
+
+2. **get_visit** - Get detailed visit information
+   - Parameters: `visitId`
+   - Returns complete visit details with assignments
+
+3. **create_visit** - Create a new visit
+   - Parameters: `jobId`, `title`, `startAt`, `endAt`, `assignedUserIds`
+   - Returns created visit
+
+4. **update_visit** - Update visit details
+   - Parameters: `visitId`, `title`, `startAt`, `endAt`, `status`
+   - Returns updated visit
+
+5. **complete_visit** - Mark visit as complete
+   - Parameters: `visitId`, `completionNotes`
+   - Returns completed visit
+
+6. **list_visit_assignments** - List team member assignments for visits
+   - Parameters: `visitId`, `limit`
+   - Returns assigned team members
+
+### Team Management
+
+**4 tools** for managing your field service team:
+
+1. **list_users** - List all team members
+   - Parameters: `isActive`, `limit`, `cursor`
+   - Returns paginated user list
+
+2. **get_user** - Get detailed user information
+   - Parameters: `userId`
+   - Returns user details and role information
+
+3. **get_team_utilization_report** - Get team utilization metrics
+   - Parameters: `startDate`, `endDate`, `userIds`
+   - Returns utilization statistics
+
+4. **get_user_timesheet** - Get timesheet for a user
+   - Parameters: `userId`, `startDate`, `endDate`
+   - Returns time entries and totals
+
+### Expense Tracking
+
+**5 tools** for managing business expenses:
+
+1. **list_expenses** - List all expenses
+   - Parameters: `status`, `userId`, `startDate`, `endDate`, `limit`, `cursor`
+   - Returns paginated expense list
+
+2. **get_expense** - Get detailed expense information
+   - Parameters: `expenseId`
+   - Returns expense details with attachments
+
+3. **create_expense** - Create a new expense
+   - Parameters: `description`, `amount`, `category`, `date`, `userId`
+   - Returns created expense
+
+4. **update_expense** - Update expense details
+   - Parameters: `expenseId`, `description`, `amount`, `category`, `status`
+   - Returns updated expense
+
+5. **delete_expense** - Delete an expense
+   - Parameters: `expenseId`
+   - Returns deletion confirmation
+
+### Product Catalog
+
+**5 tools** for managing products and services:
+
+1. **list_products** - List all products
+   - Parameters: `isActive`, `limit`, `cursor`
+   - Returns paginated product list
+
+2. **get_product** - Get detailed product information
+   - Parameters: `productId`
+   - Returns product details with pricing
+
+3. **create_product** - Create a new product
+   - Parameters: `name`, `description`, `unitPrice`, `unit`, `taxable`
+   - Returns created product
+
+4. **update_product** - Update product details
+   - Parameters: `productId`, `name`, `description`, `unitPrice`, `isActive`
+   - Returns updated product
+
+5. **delete_product** - Delete a product
+   - Parameters: `productId`
+   - Returns deletion confirmation
+
+### Service Requests
+
+**6 tools** for managing incoming service requests:
+
+1. **list_requests** - List all service requests
+   - Parameters: `status`, `limit`, `cursor`
+   - Returns paginated request list
+
+2. **get_request** - Get detailed request information
+   - Parameters: `requestId`
+   - Returns request details and contact info
+
+3. **create_request** - Create a new service request
+   - Parameters: `title`, `description`, `clientName`, `clientEmail`, `clientPhone`
+   - Returns created request
+
+4. **update_request** - Update request status and details
+   - Parameters: `requestId`, `status`, `notes`
+   - Returns updated request
+
+5. **convert_request_to_quote** - Convert request to quote
+   - Parameters: `requestId`
+   - Returns created quote
+
+6. **convert_request_to_job** - Convert request directly to job
+   - Parameters: `requestId`
+   - Returns created job
+
+### Reporting & Analytics
+
+**3 tools** for business intelligence:
+
+1. **get_revenue_report** - Generate revenue report
+   - Parameters: `startDate`, `endDate`, `groupBy`
+   - Returns revenue metrics and trends
+
+2. **get_job_profit_report** - Get job profitability analysis
+   - Parameters: `startDate`, `endDate`, `clientId`
+   - Returns profit margins and costs
+
+3. **get_team_utilization_report** - Analyze team productivity
+   - Parameters: `startDate`, `endDate`, `userIds`
+   - Returns utilization percentages and billable hours
+
+### Property Management
+
+**6 tools** for managing service locations:
+
+1. **list_properties** - List all properties
+   - Parameters: `clientId`, `limit`, `cursor`
+   - Returns paginated property list
+
+2. **get_property** - Get detailed property information
+   - Parameters: `propertyId`
+   - Returns property details and address
+
+3. **create_property** - Create a new property
+   - Parameters: `clientId`, `address`, `city`, `province`, `postalCode`, `country`
+   - Returns created property
+
+4. **update_property** - Update property details
+   - Parameters: `propertyId`, `address`, `city`, `province`, `postalCode`
+   - Returns updated property
+
+5. **delete_property** - Delete a property
+   - Parameters: `propertyId`
+   - Returns deletion confirmation
+
+6. **set_default_property** - Set default property for a client
+   - Parameters: `clientId`, `propertyId`
+   - Returns updated client
+
+### Timesheet Management
+
+**7 tools** for tracking team time:
+
+1. **list_time_entries** - List all time entries
+   - Parameters: `userId`, `startDate`, `endDate`, `limit`, `cursor`
+   - Returns paginated time entry list
+
+2. **get_time_entry** - Get detailed time entry information
+   - Parameters: `timeEntryId`
+   - Returns time entry with job details
+
+3. **create_time_entry** - Create a new time entry
+   - Parameters: `userId`, `jobId`, `startTime`, `endTime`, `description`
+   - Returns created time entry
+
+4. **update_time_entry** - Update time entry details
+   - Parameters: `timeEntryId`, `startTime`, `endTime`, `description`
+   - Returns updated time entry
+
+5. **delete_time_entry** - Delete a time entry
+   - Parameters: `timeEntryId`
+   - Returns deletion confirmation
+
+6. **stop_time_entry** - Stop a running time entry
+   - Parameters: `timeEntryId`
+   - Returns stopped time entry
+
+7. **get_user_timesheet** - Get complete timesheet for a user
+   - Parameters: `userId`, `startDate`, `endDate`
+   - Returns all time entries and totals
+
+### Line Items
+
+**8 tools** for managing quote/job/invoice line items:
+
+1. **create_job_line_item** - Add line item to job
+   - Parameters: `jobId`, `name`, `description`, `quantity`, `unitPrice`
+   - Returns created line item
+
+2. **create_quote_line_item** - Add line item to quote
+   - Parameters: `quoteId`, `name`, `description`, `quantity`, `unitPrice`
+   - Returns created line item
+
+3. **create_invoice_line_item** - Add line item to invoice
+   - Parameters: `invoiceId`, `name`, `description`, `quantity`, `unitPrice`
+   - Returns created line item
+
+4. **update_line_item** - Update line item details
+   - Parameters: `lineItemId`, `name`, `description`, `quantity`, `unitPrice`
+   - Returns updated line item
+
+5. **delete_line_item** - Delete a line item
+   - Parameters: `lineItemId`
+   - Returns deletion confirmation
+
+6. **reorder_line_items** - Change line item order
+   - Parameters: `lineItemIds` (ordered array)
+   - Returns reordered items
+
+7. **duplicate_line_item** - Copy a line item
+   - Parameters: `lineItemId`
+   - Returns duplicated item
+
+8. **bulk_update_line_items** - Update multiple line items
+   - Parameters: `updates` (array of updates)
+   - Returns updated items
+
+### Form Builder
+
+**8 tools** for creating and managing custom forms:
+
+1. **list_forms** - List all forms
+   - Parameters: `limit`, `cursor`
+   - Returns paginated form list
+
+2. **get_form** - Get form definition
+   - Parameters: `formId`
+   - Returns form with all fields
+
+3. **create_form** - Create a new form
+   - Parameters: `name`, `fields` (array)
+   - Returns created form
+
+4. **update_form** - Update form definition
+   - Parameters: `formId`, `name`, `fields`
+   - Returns updated form
+
+5. **delete_form** - Delete a form
+   - Parameters: `formId`
+   - Returns deletion confirmation
+
+6. **submit_form** - Submit form data
+   - Parameters: `formId`, `data` (field values)
+   - Returns submission record
+
+7. **list_form_submissions** - List all submissions for a form
+   - Parameters: `formId`, `limit`, `cursor`
+   - Returns paginated submissions
+
+8. **get_form_submission** - Get detailed submission
+   - Parameters: `submissionId`
+   - Returns submission with all field values
+
+### Tax Management
+
+**8 tools** for managing taxes and tax calculations:
+
+1. **list_taxes** - List all tax rates
+   - Parameters: `isActive`, `limit`, `cursor`
+   - Returns paginated tax list
+
+2. **get_tax** - Get tax details
+   - Parameters: `taxId`
+   - Returns tax rate and settings
+
+3. **create_tax** - Create a new tax
+   - Parameters: `name`, `rate`, `isCompound`
+   - Returns created tax
+
+4. **update_tax** - Update tax details
+   - Parameters: `taxId`, `name`, `rate`, `isActive`
+   - Returns updated tax
+
+5. **delete_tax** - Delete a tax
+   - Parameters: `taxId`
+   - Returns deletion confirmation
+
+6. **apply_tax_to_line_item** - Apply tax to a line item
+   - Parameters: `lineItemId`, `taxId`
+   - Returns updated line item
+
+7. **remove_tax_from_line_item** - Remove tax from line item
+   - Parameters: `lineItemId`, `taxId`
+   - Returns updated line item
+
+8. **calculate_tax_total** - Calculate total tax amount
+   - Parameters: `lineItemIds`, `taxIds`
+   - Returns calculated tax breakdown
+
+## React Applications
+
+### 15 Interactive Web Applications
+
+All applications are built with React 18, TypeScript, and Tailwind CSS. Each app is production-ready and fully functional.
+
+#### 1. Client Dashboard
+**Path**: `src/ui/react-app/src/apps/client-dashboard/`
+
+View and manage all clients with revenue and job statistics. Features:
+- Client list with search and filtering
+- Revenue tracking per client
+- Job count and status overview
+- Quick access to client details
+
+#### 2. Client Detail
+**Path**: `src/ui/react-app/src/apps/client-detail/`
+
+Comprehensive client profile view with:
+- Complete contact information
+- Property list
+- Job history
+- Revenue metrics
+- Quick actions for creating quotes/jobs
+
+#### 3. Expense Manager
+**Path**: `src/ui/react-app/src/apps/expense-manager/`
+
+Track and approve team expenses:
+- Filter by status (pending/approved/rejected)
+- Category-based organization
+- Attachment support
+- Approval workflow
+
+#### 4. Financial Dashboard
+**Path**: `src/ui/react-app/src/apps/financial-dashboard/`
+
+Business financial overview:
+- Total revenue and expenses
+- Net profit calculation
+- Outstanding vs paid invoices
+- Monthly growth metrics
+- Collection rate tracking
+
+#### 5. Form Builder
+**Path**: `src/ui/react-app/src/apps/form-builder/`
+
+Visual form designer with:
+- Drag-and-drop field management
+- Multiple field types (text, select, textarea, checkbox, date)
+- Required field configuration
+- Live preview
+- Form submission handling
+
+#### 6. Invoice Dashboard
+**Path**: `src/ui/react-app/src/apps/invoice-dashboard/`
+
+Invoice management interface:
+- Invoice list with status filtering
+- Payment tracking
+- Quick send and payment actions
+- Client and amount details
+
+#### 7. Job Board
+**Path**: `src/ui/react-app/src/apps/job-board/`
+
+Visual job management board:
+- Kanban-style job organization
+- Status-based filtering (quoted, scheduled, in progress, completed)
+- Job cards with key metrics
+- Quick status updates
+
+#### 8. Job Detail
+**Path**: `src/ui/react-app/src/apps/job-detail/`
+
+Comprehensive job view:
+- Job information and timeline
+- Line items and pricing
+- Visit schedule
+- Client and property details
+- Status management
+
+#### 9. Property Map
+**Path**: `src/ui/react-app/src/apps/property-map/`
+
+Geographic property visualization:
+- Interactive map view
+- Property markers with job counts
+- Property list panel
+- Client information
+- Click to select and view details
+
+#### 10. Quote Builder
+**Path**: `src/ui/react-app/src/apps/quote-builder/`
+
+Create and edit quotes:
+- Client selection
+- Line item management
+- Pricing calculator
+- Tax application
+- Quote preview
+
+#### 11. Request Inbox
+**Path**: `src/ui/react-app/src/apps/request-inbox/`
+
+Service request management:
+- Request status workflow (new, contacted, quoted, converted)
+- Priority indicators
+- Client contact information
+- Quick actions (contact, quote, convert)
+
+#### 12. Schedule Calendar
+**Path**: `src/ui/react-app/src/apps/schedule-calendar/`
+
+Visual scheduling interface:
+- Day/week calendar view
+- Visit timeline visualization
+- Team member assignments
+- Status tracking (scheduled, in progress, completed)
+- Time slot management
+
+#### 13. Team Overview
+**Path**: `src/ui/react-app/src/apps/team-overview/`
+
+Team performance dashboard:
+- Team member list
+- Active and completed job counts
+- Weekly hours tracking
+- Availability status
+- Performance metrics
+
+#### 14. Timesheet Grid
+**Path**: `src/ui/react-app/src/apps/timesheet-grid/`
+
+Time entry management:
+- Tabular timesheet view
+- Approval workflow
+- Filter by status (pending/approved)
+- Employee and job details
+- Hours calculation
+
+#### 15. Visit Tracker
+**Path**: `src/ui/react-app/src/apps/visit-tracker/`
+
+Field visit tracking:
+- Visit status workflow (scheduled, en route, in progress, completed)
+- Client and location details
+- Team assignments
+- Notes and completion tracking
+- Quick status updates
+
+## Usage Examples
+
+### Basic Connection
+
+```typescript
+import { JobberServer } from '@mcpengine/jobber-server';
+
+const server = new JobberServer();
+await server.run();
+```
+
+### Create Client and Job
+
+```typescript
+// Create a new client
+const client = await tools.create_client({
+  firstName: "John",
+  lastName: "Doe",
+  companyName: "Doe Enterprises",
+  email: "john@doeenterprises.com",
+  phone: "555-0123"
+});
+
+// Create a job for the client
+const job = await tools.create_job({
+  title: "HVAC Installation",
+  description: "Install new heating system",
+  clientId: client.id,
+  startAt: "2024-02-20T09:00:00Z",
+  endAt: "2024-02-20T17:00:00Z"
+});
+```
+
+### Generate Quote and Convert to Job
+
+```typescript
+// Create a quote
+const quote = await tools.create_quote({
+  title: "Kitchen Renovation",
+  message: "As discussed, here is your quote",
+  clientId: "client_123"
+});
+
+// Add line items
+await tools.create_quote_line_item({
+  quoteId: quote.id,
+  name: "Cabinet Installation",
+  quantity: 1,
+  unitPrice: 2500
+});
+
+// Send to client
+await tools.send_quote({
+  quoteId: quote.id,
+  recipientEmail: "client@example.com"
+});
+
+// After approval, convert to job
+const job = await tools.convert_quote_to_job({
+  quoteId: quote.id
+});
+```
+
+### Track Team Time
+
+```typescript
+// Start time entry
+const timeEntry = await tools.create_time_entry({
+  userId: "user_123",
+  jobId: "job_456",
+  startTime: "2024-02-15T09:00:00Z",
+  description: "Installation work"
+});
+
+// Stop when complete
+await tools.stop_time_entry({
+  timeEntryId: timeEntry.id
+});
+
+// Get user timesheet
+const timesheet = await tools.get_user_timesheet({
+  userId: "user_123",
+  startDate: "2024-02-12",
+  endDate: "2024-02-18"
+});
+```
+
+### Generate Reports
+
+```typescript
+// Revenue report
+const revenue = await tools.get_revenue_report({
+  startDate: "2024-01-01",
+  endDate: "2024-01-31",
+  groupBy: "week"
+});
+
+// Team utilization
+const utilization = await tools.get_team_utilization_report({
+  startDate: "2024-02-01",
+  endDate: "2024-02-29",
+  userIds: ["user_1", "user_2", "user_3"]
+});
+```
+
+## GraphQL API
+
+This server uses Jobber's GraphQL API. All tools execute GraphQL queries and mutations against the Jobber platform.
+
+### Authentication
+
+API requests require a valid Jobber API token passed via the `JOBBER_API_TOKEN` environment variable.
+
+### Rate Limiting
+
+Jobber implements rate limiting on API requests. This server respects those limits. For high-volume operations, consider:
+- Batching requests
+- Implementing retry logic
+- Using pagination cursors
+
+### API Documentation
+
+For complete Jobber GraphQL API documentation, visit:
+https://developer.getjobber.com/docs/
+
+## Development
+
+### Build from Source
+
+```bash
+# Clone repository
+git clone https://github.com/BusyBee3333/mcpengine.git
+cd mcpengine/servers/jobber
+
+# Install dependencies
+npm install
+
+# Build TypeScript
+npm run build
+
+# Run in development mode
+npm run dev
+```
+
+### TypeScript Compilation
+
+```bash
+# Type check without emitting
+npx tsc --noEmit
+
+# Build with source maps
+npm run build
+```
+
+### Project Structure
+
+```
+jobber/
+├── src/
+│   ├── index.ts              # Entry point
+│   ├── server.ts             # MCP server implementation
+│   ├── clients/
+│   │   └── jobber.ts         # GraphQL client
+│   ├── tools/                # 15 tool modules (96 total tools)
+│   │   ├── clients-tools.ts
+│   │   ├── jobs-tools.ts
+│   │   ├── quotes-tools.ts
+│   │   ├── invoices-tools.ts
+│   │   ├── scheduling-tools.ts
+│   │   ├── team-tools.ts
+│   │   ├── expenses-tools.ts
+│   │   ├── products-tools.ts
+│   │   ├── requests-tools.ts
+│   │   ├── reporting-tools.ts
+│   │   ├── properties-tools.ts
+│   │   ├── timesheets-tools.ts
+│   │   ├── line-items-tools.ts
+│   │   ├── forms-tools.ts
+│   │   └── taxes-tools.ts
+│   └── ui/
+│       └── react-app/
+│           └── src/
+│               └── apps/      # 15 React applications
+│                   ├── client-dashboard/
+│                   ├── client-detail/
+│                   ├── expense-manager/
+│                   ├── financial-dashboard/
+│                   ├── form-builder/
+│                   ├── invoice-dashboard/
+│                   ├── job-board/
+│                   ├── job-detail/
+│                   ├── property-map/
+│                   ├── quote-builder/
+│                   ├── request-inbox/
+│                   ├── schedule-calendar/
+│                   ├── team-overview/
+│                   ├── timesheet-grid/
+│                   └── visit-tracker/
+├── dist/                      # Compiled JavaScript
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+### Contributing
+
+Contributions welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## License
+
+MIT License - see LICENSE file for details
 
 ---
 
-**Questions?** Open an issue or join our [Discord community](https://discord.gg/mcpengage).
+**Built with ❤️ using:**
+- [Model Context Protocol](https://modelcontextprotocol.io/)
+- [Jobber GraphQL API](https://developer.getjobber.com/)
+- TypeScript 5.7+
+- React 18+
+- Zod for validation
+
+**Part of the MCPEngine project** - A comprehensive collection of MCP servers for business platforms.
+
+For issues and support, visit: https://github.com/BusyBee3333/mcpengine/issues
