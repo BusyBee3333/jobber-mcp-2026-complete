@@ -73,6 +73,10 @@ export class JobberServer {
   }
 
   private setupHandlers(): void {
+    // Derive readOnlyHint from tool name
+    const isReadOnly = (name: string) =>
+      name.startsWith('list_') || name.startsWith('get_') || name.startsWith('search_');
+
     // List available tools
     this.server.setRequestHandler(ListToolsRequestSchema, async () => {
       return {
@@ -80,6 +84,7 @@ export class JobberServer {
           name,
           description: tool.description,
           inputSchema: tool.inputSchema.shape,
+          ...(isReadOnly(name) ? { readOnlyHint: true } : {}),
         })),
       };
     });
@@ -110,6 +115,7 @@ export class JobberServer {
               text: JSON.stringify(result, null, 2),
             },
           ],
+          structuredContent: result,
         };
       } catch (error) {
         if (error instanceof Error) {

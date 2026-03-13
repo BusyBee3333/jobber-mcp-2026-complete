@@ -236,4 +236,43 @@ export const expensesTools = {
       return { deletedExpenseId: data.expenseDelete.deletedExpenseId };
     },
   },
+
+  approve_expense: {
+    description: 'Approve a pending expense for reimbursement',
+    inputSchema: z.object({
+      expenseId: z.string().describe('The expense ID to approve'),
+    }),
+    execute: async (client: JobberClient, args: any) => {
+      // Jobber approves expenses by updating their reimbursed status
+      const mutation = `
+        mutation ApproveExpense($id: ID!, $input: ExpenseUpdateInput!) {
+          expenseUpdate(id: $id, input: $input) {
+            expense {
+              id
+              description
+              total {
+                amount
+                currency
+              }
+              reimburse
+              createdAt
+            }
+            userErrors {
+              message
+              path
+            }
+          }
+        }
+      `;
+
+      const input = { reimburse: true };
+      const data = await client.mutate(mutation, { id: args.expenseId, input });
+
+      if (data.expenseUpdate.userErrors?.length > 0) {
+        throw new Error(`Expense approval failed: ${data.expenseUpdate.userErrors.map((e: any) => e.message).join(', ')}`);
+      }
+
+      return { expense: data.expenseUpdate.expense };
+    },
+  },
 };

@@ -260,4 +260,64 @@ export const jobsTools = {
       return { lineItems: data.job.lineItems };
     },
   },
+
+  complete_job: {
+    description: 'Mark a job as complete (closes the job)',
+    inputSchema: z.object({
+      jobId: z.string().describe('The job ID to complete'),
+    }),
+    execute: async (client: JobberClient, args: any) => {
+      const mutation = `
+        mutation CompleteJob($id: ID!) {
+          jobClose(id: $id) {
+            job {
+              ${JobberClient.jobFields}
+            }
+            userErrors {
+              message
+              path
+            }
+          }
+        }
+      `;
+
+      const data = await client.mutate(mutation, { id: args.jobId });
+
+      if (data.jobClose.userErrors?.length > 0) {
+        throw new Error(`Job complete failed: ${data.jobClose.userErrors.map((e: any) => e.message).join(', ')}`);
+      }
+
+      return { job: data.jobClose.job };
+    },
+  },
+
+  archive_job: {
+    description: 'Archive a job (removes it from active job list)',
+    inputSchema: z.object({
+      jobId: z.string().describe('The job ID to archive'),
+    }),
+    execute: async (client: JobberClient, args: any) => {
+      const mutation = `
+        mutation ArchiveJob($id: ID!) {
+          jobArchive(id: $id) {
+            job {
+              ${JobberClient.jobFields}
+            }
+            userErrors {
+              message
+              path
+            }
+          }
+        }
+      `;
+
+      const data = await client.mutate(mutation, { id: args.jobId });
+
+      if (data.jobArchive.userErrors?.length > 0) {
+        throw new Error(`Job archive failed: ${data.jobArchive.userErrors.map((e: any) => e.message).join(', ')}`);
+      }
+
+      return { job: data.jobArchive.job };
+    },
+  },
 };

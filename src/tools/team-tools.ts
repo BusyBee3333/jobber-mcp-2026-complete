@@ -63,8 +63,8 @@ export const teamTools = {
     },
   },
 
-  list_time_entries: {
-    description: 'List time entries with optional filtering',
+  list_team_time_entries: {
+    description: 'List time entries for team members with optional filtering',
     inputSchema: z.object({
       userId: z.string().optional(),
       visitId: z.string().optional(),
@@ -129,8 +129,8 @@ export const teamTools = {
     },
   },
 
-  create_time_entry: {
-    description: 'Create a new time entry',
+  create_team_time_entry: {
+    description: 'Create a new time entry for a team member',
     inputSchema: z.object({
       userId: z.string(),
       visitId: z.string().optional(),

@@ -218,4 +218,44 @@ export const requestsTools = {
       return { job: data.requestConvertToJob.job };
     },
   },
+
+  assign_request: {
+    description: 'Assign a request to a specific user/team member',
+    inputSchema: z.object({
+      requestId: z.string().describe('The request ID to assign'),
+      userId: z.string().describe('The user ID to assign the request to'),
+    }),
+    execute: async (client: JobberClient, args: any) => {
+      const mutation = `
+        mutation AssignRequest($id: ID!, $input: RequestUpdateInput!) {
+          requestUpdate(id: $id, input: $input) {
+            request {
+              id
+              title
+              status
+              assignedUsers {
+                id
+                firstName
+                lastName
+                email
+              }
+            }
+            userErrors {
+              message
+              path
+            }
+          }
+        }
+      `;
+
+      const input = { assignedUserIds: [args.userId] };
+      const data = await client.mutate(mutation, { id: args.requestId, input });
+
+      if (data.requestUpdate.userErrors?.length > 0) {
+        throw new Error(`Request assignment failed: ${data.requestUpdate.userErrors.map((e: any) => e.message).join(', ')}`);
+      }
+
+      return { request: data.requestUpdate.request };
+    },
+  },
 };
